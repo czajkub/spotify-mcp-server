@@ -23,7 +23,6 @@ class Config:
     # access_token_expiry = os.getenv("ACCESS_TOKEN_EXPIRY", "")
     def __init__(self):
         load_dotenv(envpath)
-        print(envpath)
         self.client_id = os.getenv("CLIENT_ID", "")
         self.client_secret = os.getenv("CLIENT_SECRET", "")
         self.access_token = os.getenv("ACCESS_TOKEN", "")

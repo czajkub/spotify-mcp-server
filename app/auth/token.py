@@ -1,11 +1,8 @@
-import os
 from datetime import datetime
-from dataclasses import dataclass
 
 import uvicorn
-from dotenv import load_dotenv
 
-from oauth import Config, SpotifyOAuth, app
+from app.auth.oauth import Config, app
 
 
 def get_auth():

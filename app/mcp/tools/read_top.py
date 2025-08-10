@@ -1,13 +1,14 @@
+from typing import List
+
 from fastmcp import FastMCP
 from aiohttp import ClientSession
 
-from app.auth.oauth import Config
 from app.auth.token import get_auth
 
 read_top = FastMCP(name="Read Top MCP")
 
 @read_top.tool
-async def read_top_artists(config: Config):
+async def read_top_artists() -> dict[str, str | List[str] | None] | None:
     """
     Makes an API request to the Spotify server.
     Use this tool to read 20 most listened to artists for the user.
@@ -32,7 +33,7 @@ async def read_top_artists(config: Config):
         print(e)
 
 @read_top.tool
-async def read_top_songs(config: Config):
+async def read_top_songs() -> dict[str, str | List[str] | None] | None:
     """
     Makes an API request to the Spotify server.
     Use this tool to read 20 most listened to tracks for the user.
