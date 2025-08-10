@@ -53,7 +53,6 @@ class SpotifyOAuth:
         self.client_secret = config.client_secret
         self.access_token = config.access_token
         self.access_token_expiry = config.access_token_expiry
-
         self.state = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
 
     def __post_init__(self):
@@ -65,6 +64,7 @@ class SpotifyOAuth:
             "client_id": self.client_id,
             "response_type": "code",
             "redirect_uri": self.redirect,
+            "scope": "user-top-read, user-library-read, user-follow-read",
             "state": self.state
         }
         return f"{self.auth_url}?{urllib.parse.urlencode(params)}"
@@ -89,18 +89,20 @@ class SpotifyOAuth:
 
 app = FastAPI()
 
+oauth = SpotifyOAuth()
 @app.get("/")
 def login():
-    oauth = SpotifyOAuth()
     auth_url = oauth.get_auth_url()
     return responses.RedirectResponse(url=auth_url)
 
 @app.get("/callback")
 async def callback(request: Request):
-    oauth = SpotifyOAuth()
     code = request.query_params.get("code")
+    state = request.query_params.get("state")
     if not code:
         raise HTTPException(status_code=400, detail="Invalid authorization code")
+    if state != oauth.state:
+        raise HTTPException(status_code=400, detail="Invalid authorization state")
     try:
         tokens = await SpotifyOAuth.get_tokens(oauth, code)
         setenv(tokens)
@@ -110,7 +112,7 @@ async def callback(request: Request):
 
 def setenv(tokens):
     set_key(envpath, "ACCESS_TOKEN", tokens["access_token"])
-    set_key(envpath, "ACCESS_TOKEN_EXPIRY", str(datetime.now() + timedelta(tokens["expires_in"])))
+    set_key(envpath, "ACCESS_TOKEN_EXPIRY", str(datetime.now() + timedelta(seconds = tokens["expires_in"])))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
