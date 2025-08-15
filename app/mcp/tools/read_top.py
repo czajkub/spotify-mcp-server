@@ -18,7 +18,11 @@ async def read_top_artists() -> dict[str, str | List[str] | None] | None:
         JSON response from the Spotify server
     """
 
-    token = get_auth()
+    token = await get_auth()
+    if token["success"] is False:
+        return {"Token": "Please authenticate with Spotify by clicking the URL below.",
+                "URL": token["URL"],
+                "instructions": token["instructions"]}
     endpoint = "https://api.spotify.com/v1/me/top/artists"
     try:
         headers = {
