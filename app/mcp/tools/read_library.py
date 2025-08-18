@@ -3,7 +3,7 @@ from typing import List
 from fastmcp import FastMCP
 from aiohttp import ClientSession
 
-from app.auth.token import get_auth
+from app.auth.getauth import get_auth
 
 read_library = FastMCP(name="Read Library MCP")
 

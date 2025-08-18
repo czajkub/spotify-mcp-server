@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from app import project_dir
+from app.projectdir import project_dir
 
 def main():
     print("Hello from spotify-mcp-server!")

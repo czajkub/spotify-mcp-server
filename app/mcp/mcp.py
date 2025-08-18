@@ -25,5 +25,5 @@ async def call_tool(name: str):
         print(result)
 
 if __name__ == "__main__":
-    # mcp.run()
-    asyncio.run(call_tool("read_top"))
+    mcp.run()
+    # asyncio.run(call_tool("read_top"))

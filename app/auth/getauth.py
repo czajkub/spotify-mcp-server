@@ -1,8 +1,6 @@
 from datetime import datetime
 
-import uvicorn
-
-from app.auth.oauth import Config, app, SpotifyOAuth
+from app.auth.oauth import Config, SpotifyOAuth
 
 
 async def get_auth():

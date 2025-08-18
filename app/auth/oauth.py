@@ -7,11 +7,10 @@ from datetime import datetime, timedelta
 
 import urllib.parse
 import httpx
-import uvicorn
 from fastapi import FastAPI, Request, HTTPException, responses
 from dotenv import load_dotenv, set_key
 
-from app import project_dir
+from app.projectdir import project_dir
 
 envpath = project_dir / ".env"
 
@@ -86,15 +85,15 @@ class SpotifyOAuth:
             resp.raise_for_status()
             return resp.json()
 
-app = FastAPI()
+api_app = FastAPI()
 
 oauth = SpotifyOAuth()
-@app.get("/")
+@api_app.get("/")
 def login():
     auth_url = oauth.get_auth_url()
     return responses.RedirectResponse(url=auth_url)
 
-@app.get("/callback")
+@api_app.get("/callback")
 async def callback(request: Request):
     code = request.query_params.get("code")
     state = request.query_params.get("state")
@@ -114,4 +113,5 @@ def setenv(tokens):
     set_key(envpath, "ACCESS_TOKEN_EXPIRY", str(datetime.now() + timedelta(seconds = tokens["expires_in"])))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    import uvicorn
+    uvicorn.run(api_app, host="127.0.0.1", port=8000)
