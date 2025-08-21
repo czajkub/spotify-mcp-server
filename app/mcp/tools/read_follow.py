@@ -22,7 +22,7 @@ async def read_follow() -> dict[str, str | List[str] | None] | None:
     endpoint = "https://api.spotify.com/v1/me/following?type=artist&limit=50"
     try:
         headers = {
-            "Authorization": f"Bearer {token.access_token}",
+            "Authorization": f"Bearer {token["access_token"]}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }

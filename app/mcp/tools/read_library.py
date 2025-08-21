@@ -22,7 +22,7 @@ async def read_albums() -> dict[str, str | List[str] | None] | None:
     endpoint = "https://api.spotify.com/v1/me/albums?limit=50"
     try:
         headers = {
-            "Authorization": f"Bearer {token.access_token}",
+            "Authorization": f"Bearer {token["access_token"]}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
@@ -48,7 +48,7 @@ async def read_tracks() -> dict[str, str | List[str] | None] | None:
     endpoint = "https://api.spotify.com/v1/me/tracks?limit=50"
     try:
         headers = {
-            "Authorization": f"Bearer {token.access_token}",
+            "Authorization": f"Bearer {token["access_token"]}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
