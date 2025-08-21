@@ -3,7 +3,14 @@ from datetime import datetime
 from app.auth.oauth import Config, SpotifyOAuth
 
 
-async def get_auth():
+def get_auth() -> dict[str, str | bool]:
+    """
+    Returns a dict with the following keys:
+    success: bool
+    access_token: str
+    expiry: str
+    when its okay
+    """
     config = Config()
     token = config.access_token
     expiry = config.access_token_expiry
