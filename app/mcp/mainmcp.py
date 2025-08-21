@@ -1,14 +1,16 @@
 import asyncio
+import os
 
-# from fastmcp import FastMCP, Client
-import fastmcp
+from fastmcp import FastMCP, Client
+# import fastmcp
 
 from tools import read_top, read_follow, read_library
+from app.projectdir import project_dir
 
 
-mcp = fastmcp.FastMCP("Spotify MCP server")
+mcp = FastMCP("Spotify MCP server")
 
-router = fastmcp.FastMCP(name="Spotify MCP router")
+router = FastMCP(name="Spotify MCP router")
 
 router.mount(read_top.read_top )
 # router.mount(read_follow.read_follow)
@@ -16,14 +18,14 @@ router.mount(read_library.read_library)
 
 mcp.mount(router)
 
-client = fastmcp.Client(mcp)
-
 
 async def call_tool(name: str):
+    client = Client(mcp)
     async with client:
         result = await client.call_tool(name)
         print(result)
 
 if __name__ == "__main__":
+    os.environ["PYTHONPATH"] = project_dir
     mcp.run()
     # asyncio.run(call_tool("read_top"))
