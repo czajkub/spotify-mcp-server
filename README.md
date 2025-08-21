@@ -5,7 +5,7 @@ An mcp server used to access info from your Spotify profile into your favourite 
 Have you ever wanted to broaden your music taste, but didn't want to endlessly search for recommendations based on your favourite artists? Now you can do that, with a single question asked to an LLM.
 
 ## Example:
-[!image](spotify_example.png)
+![image](spotify_example.png)
 
 ## Tools:
 - read_top_artists, read_top_songs - access your most listened to artists / tracks
@@ -71,3 +71,4 @@ Make sure the file looks something like this:
 ```
 
 Now you're finally set to go - open Claude Desktop and you should be able to access all of your data!
+
