@@ -16,7 +16,7 @@ def main():
         str(project_dir),
         "fastmcp",
         "run",
-        "app/mcp/mcp.py",
+        "app/mcp/mainmcp.py",
     ]
 
     sys.exit(subprocess.run(cmd))

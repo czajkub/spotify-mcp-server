@@ -1,11 +1,10 @@
-import asyncio
-import os
+# import asyncio
 
 from fastmcp import FastMCP, Client
 # import fastmcp
 
 from tools import read_top, read_follow, read_library
-from app.projectdir import project_dir
+# from app.projectdir import project_dir
 
 
 mcp = FastMCP("Spotify MCP server")
@@ -26,6 +25,5 @@ async def call_tool(name: str):
         print(result)
 
 if __name__ == "__main__":
-    os.environ["PYTHONPATH"] = project_dir
     mcp.run()
     # asyncio.run(call_tool("read_top"))
