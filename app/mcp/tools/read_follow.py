@@ -6,8 +6,9 @@ from .request import api_request
 
 read_follow = FastMCP(name="Read Follow MCP")
 
+
 @read_follow.tool
-async def read_follow() -> dict[str, str | List[str] | None] | None | Any:
+async def read_following() -> dict[str, str | List[str] | None] | None | Any:
     """
     Makes an API request to the Spotify server.
     Use this tool to get the user's followed artists.

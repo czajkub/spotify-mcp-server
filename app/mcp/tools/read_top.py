@@ -6,6 +6,7 @@ from .request import api_request
 
 read_top = FastMCP(name="Read Top MCP")
 
+
 @read_top.tool
 async def read_top_artists() -> dict[str, str | List[str] | None] | None | Any:
     """
@@ -18,6 +19,7 @@ async def read_top_artists() -> dict[str, str | List[str] | None] | None | Any:
     """
 
     return api_request("https://api.spotify.com/v1/me/top/artists")
+
 
 @read_top.tool
 async def read_top_songs() -> dict[str, str | List[str] | None] | None | Any:
@@ -35,16 +37,20 @@ async def read_top_songs() -> dict[str, str | List[str] | None] | None | Any:
 
 from app.auth.getauth import get_auth
 import requests
+
+
 @read_top.tool
 def example() -> dict[str, str | List[str] | None] | None | Any:
     token = get_auth()
     endpoint = "https://api.spotify.com/v1/me/top/artists"
     if token.get("success") == False:
-        return {"Token": "Please authenticate with Spotify",
-                "file": __file__,
-                "token": token}
+        return {
+            "Token": "Please authenticate with Spotify",
+            "file": __file__,
+            "token": token,
+        }
     headers = {
-        "Authorization": f"Bearer {token.get("access_token")}",
+        "Authorization": f"Bearer {token.get('access_token')}",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
@@ -53,11 +59,13 @@ def example() -> dict[str, str | List[str] | None] | None | Any:
             resp = session.get(url=endpoint, headers=headers)
             return resp.json()
     except TypeError as te:
-        return {"error": "typeerror ocurred",
-                "status_code": str(resp.status_code)}
+        return {"error": "typeerror ocurred", "status_code": str(resp.status_code)}
     except:
-        return {"error": "unspecified exception occured",
-                "status_code": str(resp.status_code)}
+        return {
+            "error": "unspecified exception occured",
+            "status_code": str(resp.status_code),
+        }
+
 
 # if __name__ == "__main__":
 #     def wtf() -> dict[str, str | List[str] | None] | None:

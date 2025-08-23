@@ -14,6 +14,7 @@ from app.projectdir import project_dir
 
 envpath = project_dir / ".env"
 
+
 @dataclass
 class Config:
     # client_id = os.getenv("CLIENT_ID", "")
@@ -26,17 +27,19 @@ class Config:
         self.client_secret = os.getenv("CLIENT_SECRET", "")
         self.access_token = os.getenv("ACCESS_TOKEN", "")
         self.access_token_expiry = os.getenv("ACCESS_TOKEN_EXPIRY", "")
+
     def __post_init__(self):
         if self.client_id == "":
             raise RuntimeError("client_id must be set")
         if self.client_secret == "":
             raise RuntimeError("client_secret must be set")
 
+
 @dataclass
 class SpotifyOAuth:
     """
     A class to handle Spotify OAuth authentication.
-    
+
     This class manages the OAuth flow, including token retrieval and refresh.
     It uses environment variables to store sensitive information securely.
     """
@@ -51,11 +54,15 @@ class SpotifyOAuth:
         self.client_secret = config.client_secret
         self.access_token = config.access_token
         self.access_token_expiry = config.access_token_expiry
-        self.state = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
+        self.state = "".join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
+        )
 
     def __post_init__(self):
         if not self.client_id or not self.client_secret:
-            raise ValueError("Client ID and Client Secret must be set in the environment variables.")
+            raise ValueError(
+                "Client ID and Client Secret must be set in the environment variables."
+            )
 
     def get_auth_url(self):
         params = {
@@ -63,7 +70,7 @@ class SpotifyOAuth:
             "response_type": "code",
             "redirect_uri": self.redirect,
             "scope": "user-top-read, user-library-read, user-follow-read",
-            "state": self.state
+            "state": self.state,
         }
         return f"{self.auth_url}?{urllib.parse.urlencode(params)}"
 
@@ -71,13 +78,13 @@ class SpotifyOAuth:
         auth_str = f"{self.client_id}:{self.client_secret}"
         headers = {
             "Authorization": f"Basic {base64.b64encode(auth_str.encode()).decode()}",
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         data = {
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": self.redirect
+            "redirect_uri": self.redirect,
         }
 
         async with httpx.AsyncClient() as client:
@@ -85,13 +92,17 @@ class SpotifyOAuth:
             resp.raise_for_status()
             return resp.json()
 
+
 api_app = FastAPI()
 
 oauth = SpotifyOAuth()
+
+
 @api_app.get("/")
 def login():
     auth_url = oauth.get_auth_url()
     return responses.RedirectResponse(url=auth_url)
+
 
 @api_app.get("/callback")
 async def callback(request: Request):
@@ -108,10 +119,18 @@ async def callback(request: Request):
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
 
+
 def setenv(tokens):
     set_key(envpath, "ACCESS_TOKEN", tokens["access_token"])
-    set_key(envpath, "ACCESS_TOKEN_EXPIRY", str(datetime.now() + timedelta(seconds = tokens["expires_in"])))
+    set_key(
+        envpath,
+        "ACCESS_TOKEN_EXPIRY",
+        str(datetime.now() + timedelta(seconds=tokens["expires_in"])),
+    )
+    set_key(envpath, "REFRESH_TOKEN", tokens["refresh_token"])
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(api_app, host="127.0.0.1", port=8000)

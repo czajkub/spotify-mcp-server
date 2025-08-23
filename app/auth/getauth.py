@@ -3,7 +3,7 @@ from datetime import datetime
 from app.auth.oauth import Config, SpotifyOAuth
 
 
-def get_auth() -> dict[str, str | bool]:
+def get_auth() -> dict[str, str | bool | datetime]:
     """
     Returns a dict with the following keys:
     success: bool
@@ -14,7 +14,7 @@ def get_auth() -> dict[str, str | bool]:
     config = Config()
     token = config.access_token
     expiry = config.access_token_expiry
-    expiry_date = datetime.strptime(expiry, '%Y-%m-%d %H:%M:%S.%f')
+    expiry_date = datetime.strptime(expiry, "%Y-%m-%d %H:%M:%S.%f")
     if token is None or expiry is None or expiry_date < datetime.now():
         print("Please authenticate with Spotify.")
         print("jakastam instrukcja")
@@ -23,10 +23,6 @@ def get_auth() -> dict[str, str | bool]:
         return {
             "success": False,
             "instructions": "Run `uv run <project dir>/app/auth/oauth.py` and follow the instructions.",
-            "URL": oauth.get_auth_url()
+            "URL": oauth.get_auth_url(),
         }
-    return {
-        "success": True,
-        "access_token": token,
-        "access_token_expiry": expiry_date
-    }
+    return {"success": True, "access_token": token, "access_token_expiry": expiry_date}
